@@ -39,7 +39,7 @@ function AuthPage() {
   async function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -49,8 +49,12 @@ function AuthPage() {
     });
     setLoading(false);
     if (error) return toast.error(error.message);
-    toast.success("Account created");
-    navigate({ to: "/dashboard" });
+    if (data.session) {
+      toast.success("Account created");
+      navigate({ to: "/dashboard" });
+    } else {
+      toast.success("Account created! Check your email to confirm before signing in.");
+    }
   }
 
   async function handleGoogle() {
